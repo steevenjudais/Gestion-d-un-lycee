@@ -1,0 +1,10 @@
+<report
+    id="report_parc_materials"
+    model="parc.material"
+    string="Liste matériel"
+    report_type="qweb-pdf"
+    name="parc.material_report_material_list"
+    file="parc.material_report_material_list"
+    paperformat="report.paperformat_euro"
+    attachment_use="False"
+/>

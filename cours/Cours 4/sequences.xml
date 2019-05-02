@@ -1,0 +1,24 @@
+<!-- # SEQUENCE POUR LES NUMEROS DE BON DE VISITE -->
+<data noupdate="1">
+	<record forcecreate="1" id="seq_bv_id" model="ir.sequence">
+		<field name="name">seq_bv</field>
+		<field name="code">tdsiaoi.bv.number</field>
+		<field name="padding" eval="5" />
+		<field name="prefix">BV%(year)s</field>
+		<field eval="00001" name="number_next" />
+
+	</record>
+</data>
+
+
+<!-- # SEQUENCE POUR LES NUMEROS DE COMPROMIS -->
+<data noupdate="1">
+	<record forcecreate="1" id="seq_binding_sale_agreement_id"
+		model="ir.sequence">
+		<field name="name">seq_binding_sale_agreement</field>
+		<field name="code">tdsiaoi.binding_sale_agreement.number</field>
+		<field name="padding" eval="5" />
+		<field name="prefix">C</field>
+		<field eval="1500" name="number_next" />
+	</record>
+</data>

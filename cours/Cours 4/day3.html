@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Formation IUT La Roche sur Yon</title>
+        <meta name="description" content="Formation Odoo dev - IUT La Roche sur Yon - Part I">
+        <meta name="author" content="Antoine Morit / Fabien Amiaud">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+        <link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/theme/league.css" id="theme">
+        <!-- Code syntax highlighting -->
+        <link rel="stylesheet" href="lib/css/zenburn.css">
+        <link rel="stylesheet" href="teamdsi.css">
+        <!-- Printing and PDF exports -->
+        <script>
+            var link = document.createElement( 'link' );
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+            document.getElementsByTagName( 'head' )[0].appendChild( link );
+        </script>
+        <!--[if lt IE 9]>
+        <script src="lib/js/html5shiv.js"></script>
+        <![endif]-->
+    </head>
+    <body>
+        <div class="reveal">
+            <!-- Any section element inside of this container is displayed as a slide -->
+            <div class="slides">
+                <section>
+                    <section>
+                        <h1>Formation Odoo Dev</h1>
+                        <h3>IUT La Roche sur Yon</h3>
+                        <p>
+                            <small>part 2</small>
+                        </p>
+                    </section>
+                    <section>
+                        <h3>Méthodes, sécurité et vues</h3>
+                        <ol>
+                            <li>Actions et Menus</li>
+                            <li>Les vues</li>
+                            <li>Les méthodes</li>
+                            <li>La gestion des droits</li>
+                            <li>Héritage des vues</li>
+                            <li>Changements dynamiques</li>
+                            <li>Les vues recherches</li>
+                            <li>Bouton d'action</li>
+                        </ol>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h1>Actions et Menus</h1>
+                    </section>
+                    <section>
+                        <h2>Actions et Menus</h2>
+                        <ol>
+                            <li>Les actions</li>
+                            <li>Les menus</li>
+                        </ol>
+                        <aside class="notes" data-markdown="">
+                            Parler des act_window et act_server                                            
+                        </aside>
+                    </section>
+                                        <section>
+                        <h2>Rôle des actions (IrActions)</h2>
+                        <br>
+Définir des actions lancées par le client<br>
+                        <ul>
+                            <li>IrActionsActWindow
+                            <li>IrActionsReportXml</li>
+                            <li>IrActionsActUrl</li>
+                            <li>IrActionsServer</li>
+                        </ul>
+                        <aside class="notes" data-markdown="">
+                        </aside>
+                    </section>
+                    <section>
+                        <h2>Le modèle Act_Window</h2>
+            <div class="notes" data-markdown>
+<pre><code data-trim data-noescape></code></pre>
+
+```python
+
+class IrActionsActWindow(models.Model):
+    _name = 'ir.actions.act_window'
+    
+    name = fields.Char(string='Action Name', translate=True)
+    view_id = fields.Many2one('ir.ui.view')
+    domain = fields.Char(string='Domain Value')
+    context = fields.Char(string='Context Value', default={}, required=True)
+    res_id = fields.Integer(string='Record ID', help="Database ID of record to open in form view, when ``view_mode`` is set to 'form' only")
+    res_model = fields.Char(string='Destination Model', required=True)
+    src_model = fields.Char(string='Source Model', help="Optional model name of the objects on which this action should be visible")
+    target = fields.Selection([('current', 'Current Window'), ('new', 'New Window'), ('inline', 'Inline Edit'), 
+             ('fullscreen', 'Full Screen'), ('main', 'Main action of Current Window')], default="current", string='Target Window')
+    view_mode = fields.Char(required=True, default='tree,form',
+                            help="Comma-separated list of allowed view modes, such as 'form', 'tree', 'calendar', etc. (Default: tree,form)")
+    view_type = fields.Selection([('tree', 'Tree'), ('form', 'Form')], default="form", string='View Type')
+    view_ids = fields.One2many('ir.actions.act_window.view', 'act_window_id', string='Views')
+    limit = fields.Integer(default=80, help='Default limit for the list view')
+    groups_id = fields.Many2many('res.groups', 'ir_act_window_group_rel', 'act_id', 'gid', string='Groups')
+    search_view_id = fields.Many2one('ir.ui.view', string='Search View Ref.')
+
+```
+            </div>
+                        <aside class="notes" data-markdown="">
+Parler du lancement en python ou depuis l 'interface, via le XML                        
+                        </aside>
+                    </section>
+                    <section>
+                        <h2>Le contexte</h2>
+                        <ul>
+                            <li>default_xxx : assigner des valeurs par défaut</li>
+                            <li>search_default_xxx=1 : prévalider des filtres de la vue de recherche associée</li>
+                        </ul>
+                        <pre>
+Exemple sur res_partner : 
+<field name="context">{'default_customer':1, 'search_default_customer':1}</field>
+                        </pre>
+                        <p>Le search_default_xxx peut être outre-passé, pas le domaine !</p>
+                    </section>
+                    <section>
+                        <h2>Exemple en XML</h2>
+                        <img width="800" data-src="img/act_window.png"/>
+                    </section>
+                    <section>
+                        <h2>Le modèle ir.ui.menu</h2>
+            <div class="notes" data-markdown>
+<pre><code data-trim data-noescape></code></pre>
+
+```python
+
+class IrUiMenu(models.Model):
+    _name = 'ir.ui.menu'
+    _order = "sequence,id"
+    _parent_store = True
+
+
+    name = fields.Char(string='Menu', required=True, translate=True)
+    active = fields.Boolean(default=True)
+    sequence = fields.Integer(default=10)
+    child_id = fields.One2many('ir.ui.menu', 'parent_id', string='Child IDs')
+    parent_id = fields.Many2one('ir.ui.menu', string='Parent Menu', index=True, ondelete="restrict")
+    parent_left = fields.Integer(index=True)
+    parent_right = fields.Integer(index=True)
+    groups_id = fields.Many2many('res.groups', 'ir_ui_menu_group_rel',
+                                 'menu_id', 'gid', string='Groups',
+                                 help="If you have groups, the visibility of this menu will be based on these groups. "\
+                                      "If this field is empty, Odoo will compute visibility based on the related object's read access.")
+    complete_name = fields.Char(compute='_compute_complete_name', string='Full Path')
+    web_icon = fields.Char(string='Web Icon File')
+    action = fields.Reference(selection=[('ir.actions.report.xml', 'ir.actions.report.xml'),
+                                         ('ir.actions.act_window', 'ir.actions.act_window'),
+                                         ('ir.actions.act_url', 'ir.actions.act_url'),
+                                         ('ir.actions.server', 'ir.actions.server'),
+                                         ('ir.actions.client', 'ir.actions.client')])
+
+```
+            </div>
+                        <aside class="notes" data-markdown="">
+Parler du lancement en python ou depuis l 'interface, via le XML                        
+                        </aside>
+                    </section>
+                    <section>
+                        <h2>Exemple en XML</h2>
+                        <img width="960" data-src="img/menus.png"/>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h1>Les vues</h1>
+                    </section>
+                    <section>
+                        <h2>Le modèle de base</h2>
+            <div class="notes" data-markdown>
+<pre><code data-trim data-noescape></code></pre>
+
+```python
+class view(osv.osv):
+    _name = 'ir.ui.view'
+    _columns = {
+        'name': fields.char('View Name', required=True),
+        'model': fields.char('Object', select=True),
+        'priority': fields.integer('Sequence', required=True),
+        'type': fields.selection([
+            ('tree','Tree'),
+            ('form','Form'),
+            ('graph', 'Graph'),
+            ('calendar', 'Calendar'),
+            ('diagram','Diagram'),
+            ('gantt', 'Gantt'),
+            ('kanban', 'Kanban'),
+            ('search','Search'),
+            ('qweb', 'QWeb')], string='View Type'),
+        'arch': fields.text('View Architecture', required=True),
+        'inherit_id': fields.many2one('ir.ui.view', 'Inherited View', ondelete='restrict', select=True),
+        'groups_id': fields.many2many('res.groups', 'ir_ui_view_group_rel', 'view_id', 'group_id',
+            string='Groups', help="If this field is empty, the view applies to all users. Otherwise, the view applies to the users of those groups only."),
+        'model_ids': fields.one2many('ir.model.data', 'res_id', domain=[('model','=','ir.ui.view')], auto_join=True),
+        'mode': fields.selection(
+            [('primary', "Base view"), ('extension', "Extension View")],
+        'active': fields.boolean("Active",
+
+```
+            </div>
+                    </section>
+                    <section>
+                        <h2>La vue tree</h2>
+                         <ul>
+                            <li>editable : si valeur = top ou bottom, edition possible</li>
+                            <li>default_order : syntaxe habituelle, permet d'outrepasser le tri du modèle</li>
+                            <li>decoration-xxx attribut : mise en valeur selon conditions</li>
+                            <li>create, edit, delete:  pour limiter les éditions</li>
+                        </ul>
+                        <pre>
+Exemple : decoration-xxx
+tree decoration-info="state=='to upgrade' or state=='to install'" 
+decoration-danger="state=='uninstalled'"
+{$name} can be bf (font-weight: bold), it (font-style: italic), ou
+les couleurs bootstrap (danger, info, muted, primary, success or warning).
+
+Historique : colors, fonts                    
+                        </pre>
+                    </section>
+                    <!--
+                    <section>
+                        <h2>Ajouter un ou des boutons : button</h2>
+                         <ul>
+                            <li>icon : icône à afficher -cf http://fontawesome.io/icons/</li>
+                            <li>string : chaine alternative à une icone</li>
+                            <li>type : workflow, object, action</li>
+                            <li>name, args : infos associées au type, s'il y a lieu</li>
+                            <li>attrs : domaine associant un attribut invisible ou readonly</li>
+                            <li>context : contexte associé automatiquement à l'appel</li>
+                            <li>confirm : automatise une boite de dialogue avec texte</li>
+                        </ul>
+                    </section>
+                    -->
+                    <section>
+                        <h2>Ajouter des colonnes : field</h2>
+                         <ul>
+                            <li>name : le nom du champ (obligatoire)</li>
+                            <li>string : titre de colonne -def=celle du champ</li>
+                            <li>invisible : essentiel si des champs sont utilisés pour calculs, couleurs...</li>
+                            <li>groups : liste des groups habilités à voir le champ</li>
+                            <li>widget : progressbar many2onebutton handle</li>
+                            <li>sum, avg : permet de d'afficher les totaux, moyennes</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>Exemple en XML</h2>
+                        <img width="960" data-src="img/treeview.png"/>
+                    </section>
+                    <section>
+                        <h1>Pratique</h1>
+                        <h2>Créer les treeviews et menus pour nos modèles</h2>
+                    </section>
+                    <section>
+                        <h2>La vue Form</h2>
+                        <img width="1024" data-src="img/formview.png"/>
+                    </section>
+                    <section>
+                        <h2>La vue form</h2>
+                         <ul>
+                            <li>header : pour les boutons, et le statut</li>
+                            <li>sheet : contenu de la vue, non obligatoire</li>
+                            <li>oe_button_box : pour les boutons oe_button_box</li>
+                            <li>notebook :  contenant de "pages" pour les onglets</li>
+                            <li>oe_chatter : espace "réseau social"</li>
+                        </ul>
+                        <p>Compléments</p>
+                         <ul>
+                            <li>group : permet d'organiser les champs</li>
+                            <li>newline : rupture groupes</li>
+                            <li>separator : comme son nom l'indique, param. string</li>
+                            <li>button : Définit un bouton déclenchant une action</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>Ajouter des colonnes : field</h2>
+                         <ul>
+                            <li>name : le nom du champ (obligatoire)</li>
+                            <li>widget : voir après, nouveaux comportements</li>
+                            <li>options : options complémentaires pour widgets</li>
+                            <li>class : oe_inline, oe_left, oe_right, oe_read_only, <br/> oe_edit_only, oe_no_button, oe_avatar</li>
+                            <li>groups : limiter les droits sur tout élément</li>
+                            <li>attrs : permet de gérer visibilité, read-only selon domaine</li>
+                            <li>domain : pour les champs relationnels, limite la sélection</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>Ajouter des colonnes : field</h2>
+                         <ul>
+                            <li>context : éléments pour champs relationnels</li>
+                            <li>nolabel et placeholder : intéressant pour text/html</li>
+                            <li>mode :  pour les One2many, display mode</li>
+                            <li>help : pour précisions si != du champ de la classe</li>
+                            <li>classiques : readonly, required</li>
+                        </ul>
+                    </section>
+ 			<section tagcloud>
+			<h2>Les widgets</h2>
+char
+date
+email
+float_time
+handle
+handler
+html
+image
+integer
+linkedin
+mail_followers
+mail_thread
+many2many
+many2many_binary
+many2many_kanban
+many2many_tags
+many2many_tags_email
+many2onebutton
+monetary
+one2many
+one2many_list
+pad
+progressbar
+reference
+selection
+statusbar
+url
+
+                    </section>
+                    <section>
+                        <h2>Exemple (extraits) en XML</h2>
+                        <img width="1024" data-src="img/formview2.png"/>
+                    </section>
+                    <section>
+                        <h1>Pratique</h1>
+                        <h2>Créer une formview pour notre modèle</h2>
+                    </section>
+                    <section>
+                         <h2>La vue Calendrier</h2>
+*                        <ul>
+                            <li>date_start : obligatoire, le champ date début</li>
+                            <li>date_stop : date de fin</li>
+                            <li>color : le champ qui détermine les groupes auto pour les couleurs</li>
+                            <li>quick_add :  permet d'ajouter en deux clics une entrée</li>
+                            <li>display : les infos à afficher</li>
+                            <li>all_day : nom d'un champ boolean s'il existe</li>
+                            <li>mode : au choix : day, week, month</li>
+                        </ul>
+                    </section>
+                    <section>
+                         <h2>La vue Kanban</h2>
+*                        <ul>
+                            <li>default_group_by : les colonnes</li>
+                            <li>default_order : idem tree</li>
+                            <li>class : classes html à ajouter</li>
+                            <li>group_xx :  présence ou non des menus</li>
+                            <li>fields : champs pour les calculs</li>
+                            <li>templates : le template QWeb de la vue elle-même</li>
+                        </ul>
+                        <p>A voir avec Qweb</p>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h1>Les vues recherches</h1>
+                    </section>
+                    <section>
+                        <h2>Eléments field</h2>
+                        <ul>
+                            <li>name : le nom du champ à filtrer</li>
+                            <li>string : permet de surcharger le libellé du champ</li>
+                            <li>operator : si besoin surcharger "="</li>
+                            <li>filter_domain : surcharge le filtre par défaut (permet de combiner)</li>
+                            <li>Par exemple : filter_domain="[('categ_id', 'child_of', self)]"</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>Eléments filter</h2>
+                        <ul>
+                            <li>string : l'intitulé du filtre</li>
+                            <li>domain : le domaine correspondant</li>
+                            <li>context : si besoin</li>
+                            <li>name : permet un usage avec _search_defaut_xx</li>
+                            <li>help : comme son nom l'indique..</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h1>Pratique</h1>
+                        <h2>Mettre en place les vues de recherche</h2>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h1>Héritage des vues</h1>
+                    </section>
+                    <section>
+                        <h2>Héritage des vues</h2>
+                        <ul>
+                            <li>Mécanisme de l'héritage</li>
+                            <li>Insertion par field / Attributs</li>
+                            <li>Insertion par attribut XPath</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>Héritage des vues</h2>
+                        <ul>
+                            <li>Attribut : inherit_id</li>
+                            <li>position = after, before, inside</li>
+                            <li>Exemple : field name="champ1" position="after"</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h1>Pratique</h1>
+                        <h2>Ajouter les champs custom dans la fiche partenaire</h2>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h1>Les méthodes</h1>
+                    </section>
+                    <section>
+                        <h2>Définir une méthode</h2>
+                        <ol>
+                            <li>Les décorateurs</li>
+                            <li>Définition d'une méthode</li>
+                        </ol>
+                        <p>
+                        </p>
+                    </section>
+                    <section>
+                        <h2>Les décorateurs</h2>
+                        <pre class="notes">
+
+@api.one
+def method(self):
+    return self.name
+
+@api.multi
+def method(self):
+    for session in self.session_ids:
+        session.xxx = zzz
+    return {}
+
+@api.model
+def method(self):
+    pass
+
+</pre>
+                    </section>
+                    <section>
+                        <h2>Objet de la méthode, paramètres</h2>
+                        <div class="notes" data-markdown="">
+                            <pre>
+<code data-trim="" data-noescape=""></code></pre>
+                            ```python
+                            @api.multi
+                            def action_invoice_create(self, grouped=False, final=False):
+                            """
+                            Create the invoice associated to the SO.
+                            :param grouped: if True, invoices are grouped by SO id. If False, invoices are grouped by
+                            (partner_invoice_id, currency)
+                            :param final: if True, refunds will be generated if necessary
+                            :returns: list of created invoices
+                            """
+                            ....
+                            ```
+                        </div>
+                    </section>
+                    <section>
+                        <h1>Pratique</h1>
+                        <h2>Ecrire et tester sa méthode</h2>
+                    </section>
+                    <section>
+                        <h1>Pratique</h1>
+                        <ol>
+                            <li>Ajout d'un champ "Attribué" ou "Libre" dans les devices (+ modification des vues form, tree et search), et ajout d'un bouton dans chaque device permettant de passer d'un statut à l'autre (en vidant le champ date allocation si passage en "Libre")</li>
+                            <li>Bouton sur les marques, pour mettre à jour la date de fin de garantie de tous les devices associés</li>
+                            <li>Bouton sur un partner pour désaffecter tous ses appareils</li>
+                        </ol>
+                    </section>
+                </section>
+                <section>
+                    <section>
+                        <h1>Gestion des droits</h1>
+                    </section>
+                    <section>
+                        <h2>Le dossier security</h2>
+                        <ol>
+                            <li>xxxx_security.xml</li>
+                            <li>ir.model.access.csv</li>
+                            <li>Les ir.rules</li>
+                        </ol>
+                        <p>
+                        </p>
+                        <h5>Objectif : règles d'accès OK</h5>
+                    </section>
+                    <section>
+                        <h2>xxxx_security.xml</h2>
+                        <img height="500" data-src="img/groups.png">
+                    </section>
+                    <section>
+                        <h2>ir.model.access.csv</h2>
+                        <img width="800" data-src="img/acl.png">
+                        <h5>Attention à l'ordre !</h5>
+                    </section>
+                    <section>
+                        <h2>Les ir.rules</h2>
+                        <div class="notes" data-markdown="">
+                            Concept : Filtrer les données selon un domain en fonction des droits associés
+                        </div>
+                        <h5>Voir dans l'interface Odoo</h5>
+                    </section>
+                    <section>
+                        <h1>Pratique</h1>
+                        <h2>Définir les droits des modèles créés</h2>
+                    </section>
+                    <section>
+                        <h1>Pratique</h1>
+                        <ol>
+                            <li>Tout le monde peut consulter les devices, modèles, marques, ...</li>
+                            <li>Seulement les admin peuvent créer, modifier ou supprimer les devices, modèles, marques, ...</li>
+                            <li>Un utilisateur simple ne doit pouvoir voir que ses propres devices (rule), les admins doivent pouvoir tout voir</li>
+                            <li>Tester via l'interface en modifiant les droits de l'utilisateur</li>
+                        </ol>
+                    </section>
+                </section>
+            </div>
+        </div>
+        <script src="lib/js/head.min.js"></script>
+        <script src="js/reveal.js"></script>
+        <script>
+            // Full list of configuration options available at:
+            // https://github.com/hakimel/reveal.js#configuration
+            Reveal.initialize({
+            	controls: true,
+            	progress: true,
+            	history: true,
+            	center: true,
+            	slideNumber: true,
+            	slideNumber: 'c/t',
+            	showSlideNumber: 'speaker',
+            
+            
+            
+            	transition: 'concave', // none/fade/slide/convex/concave/zoom
+            	// Optional reveal.js plugins
+            	dependencies: [
+            		{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+            		{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+            		{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+            		{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+            		{ src: 'plugin/zoom-js/zoom.js' },
+            		{ src: 'plugin/notes/notes.js', async: true },
+            		{ src: 'plugin/tagcloud/tagcloud.js', async: true }
+            	]
+            });
+            
+        </script>
+    </body>
+</html>

@@ -1,0 +1,23 @@
+<odoo>
+	<data>
+	
+		<!-- Top menu item -->
+    	<menuitem name="Lycée" id="menu_root"/>
+    	
+    	<!-- menu categories -->
+    	<menuitem name="Configuration" id="config_menu" parent="menu_root"/>
+    	
+    	
+    	<!-- actions -->
+    	<menuitem name="Classe" id="config_menu_classe" parent="config_menu" action="classe_action_window"/>
+    	
+    	<menuitem name="Professeur" id="config_menu_professeur" parent="config_menu" action="professeur_action_window"/>
+    	
+    	<menuitem name="Elève" id="config_menu_eleve" parent="config_menu" action="eleve_action_window"/>
+
+    	<menuitem name="Cours" id="config_menu_cours" parent="config_menu" action="cours_action_window"/>
+    	
+    	<menuitem name="Agenda" id="config_menu_agenda" parent="config_menu" action="agenda_action_window"/>
+    	
+	</data>
+</odoo>

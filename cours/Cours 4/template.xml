@@ -1,0 +1,12 @@
+<template id="material_report_material_list">
+    <t t-call="report.html_container">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="report.external_layout">
+                <div class="page">
+                    <h2>Titre de l'état</h2>
+                    <p>Le nom du matériel est : <span t-field="o.name"/></p>
+                </div>
+            </t>
+        </t>
+    </t>
+</template>

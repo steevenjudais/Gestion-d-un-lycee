@@ -1,0 +1,14 @@
+<!-- ETAT LIA (Modèle compromis) -->
+<record id="jasper_report_letter_of_intent" model="ir.actions.report.xml">
+    <field name="auto">True</field>
+    <field name="name">Lettre d'intention d'achat</field>
+    <field name="model">tdsiaoi.bsa</field>
+    <field name="jasper_model_id" ref="tdsiaoi.model_tdsiaoi_bsa"></field>
+    <field name="report_name">jasper_report_letter_of_intent</field>
+    <field name="report_rml">tdsiaoi/report/letter_of_intent.jrxml</field>
+    <field name="jasper_report">True</field>
+    <field name="header">False</field>
+    <field name="jasper_output">pdf</field>
+    <field name="report_type">pdf</field>
+    <field name="groups_id" eval="[(4, ref('tdsiaoi.group_aoi_admin'))]"/>
+</record>

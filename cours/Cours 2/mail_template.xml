@@ -1,0 +1,21 @@
+<record id="email_template_asking_accounting" model="mail.template">
+	<field name="name">M.A.J Comptabilité</field>
+	<field name="aoi_id">M.A.J Comptabilité</field>
+	<field name="email_from">${user.email}</field>
+	<field name="subject">Mandat n°${object.number} : Mise à jour des
+		documents comptables
+	</field>
+	<field name="is_aoi_template" eval="True" />
+	<field name="model_id" ref="tdsiaoi.model_tdsiaoi_mandate" />
+	<field name="auto_delete" eval="False" />
+	<field name="lang">fr_FR</field>
+	<field name="body_html"><![CDATA[
+<div><table style="width:600px;background:inherit;color:inherit" cellspacing="0" cellpadding="0"> <tbody><tr> <td style="padding:10px 10px 
+10px 5px;font-size: 12px" width="200" valign="center"> <img src="/logo.png" style="padding: 0px; margin: 0px; height: auto; width: 80px;" alt="${user.company_id.name}"> 
+</td> </tr></tbody> </table> </div>
+ <div style="padding:0px;width:600px;margin:auto;background: #FFFFFF repeat top /100%;color:#777777">
+ <p><font style="font-size: 12px;">Bonjour&nbsp;&nbsp;</font></p>
+ <p><font style="font-size: 12px;">Mandat n° ${object.number}&nbsp;</font></p>
+ <p><font style="font-size: 12px;">Date de fin d'exercice : ${object.accounting_date}</font><br></p>  
+ <p>&nbsp;</p></div> ]]></field>
+</record>

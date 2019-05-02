@@ -1,0 +1,12 @@
+<act_window 
+id="tdsiaoi_wiz_test_advert_multi_action1" 
+multi="True" 
+key2="client_action_multi" 
+name="Envoyer l'annonce à l'acquéreur" 
+res_model="wiz.send_ad"
+src_model="tdsiaoi.research" 
+view_mode="form" 
+target="new" 
+view_type="form" 
+view_id="tdsiaoi_wiz_send_ad_form" />
+

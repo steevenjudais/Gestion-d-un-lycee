@@ -1,0 +1,49 @@
+<odoo>
+	<data>
+ 		<record model="ir.ui.view" id="view_classe_form">
+			<field name="name">classe.form</field>
+			<field name="model">classe</field>
+			<field name="arch" type="xml">
+				<form string="Classe" class="classe">
+					<header>
+					</header>
+					<sheet>
+						<group>
+							<group>
+								<field name="name" string="Nom classe"/>
+								<field name="level" string="Section"/>
+								<field name="professeur_ids" widget="many2many_tags" string="Professeurs"/>
+								<field name="eleve_ids" widget="many2many_tags" string="Elèves"/>
+								<field name="agenda_ids" widget="many2many_tags" string="Ligne d'agenda"/>
+							</group>
+							<group>
+
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="view_classe_tree">
+			<field name="name">classe.tree</field>
+			<field name="model">classe</field>
+			<field name="arch" type="xml">
+				<tree string="Classe">
+					<field name="name" string="Nom classe"/>
+					<field name="level" string="Section"/>
+					<field name="professeur_ids" widget="many2many_tags" string="Professeurs"/>
+					<field name="eleve_ids" widget="many2many_tags" string="Elèves"/>
+					<field name="agenda_ids" widget="many2many_tags" string="Ligne d'agenda"/>
+				</tree>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="classe_action_window">
+			<field name="name">Nom classe</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">classe</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context"></field>
+    	</record>
+	</data>
+</odoo>

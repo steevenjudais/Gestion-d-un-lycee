@@ -1,0 +1,1329 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Formation IUT La Roche sur Yon</title>
+
+		<meta name="description" content="Formation Odoo dev - IUT La Roche sur Yon - Part I">
+		<meta name="author" content="Antoine Morit / Fabien Amiaud">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/league.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+		<link rel="stylesheet" href="teamdsi.css">
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+       <div class="reveal">
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+				<section>
+					<h1>Formation Odoo Dev</h1>
+					<h3>IUT La Roche sur Yon</h3>
+					<p>
+						<small>Le 04/03/2019</small>
+					</p>
+				</section>
+				<section>
+					<h3>Les modules Odoo en détail</h3>
+					<ol>
+
+<li>Structuration des sources (dossiers et fichiers)</li>
+<li>Introduction aux objets : l'ORM</li>
+<li>Héritage des modèles</li>
+<li>Relations entre les objets</li>
+<li>Les méthodes de l'ORM</li>
+<li>Les méthodes</li>
+<li>Comment créer des données depuis des fichiers XML</li>
+<li>La gestion des droits</li>
+					</ol>
+				</section>
+
+</section>
+<section>
+				<section>
+					<h1>Structuration des sources</h1>
+				</section>
+					<section>
+						<h2>Construire un module Odoo</h2>
+						<ol>
+							<li>Contenu d'un module</li>
+							<li>Structuration module</li>
+							<li>Création dépôt</li>
+							<li>Création Module</li>
+						</ol>
+						<h2>Objectif : Module installé</h2>
+					</section>
+					<section>
+						<h2>Contenu d'un module</h2>
+                    <img width="800" data-src="img/structure_module_odoo.png" >
+					</section>
+
+				<section>
+					<h2>fichier __manifest__.py</h2>
+					<img width="709" data-src="img/manifest.png" >
+                    <aside class="notes">
+<pr>
+Dans les anciennes versions (9, 8, 7) __openerp__.py	
+
+name
+It must be non-technical name of the module
+
+summary
+Short description of the module. E.g. you can describe here which problem is solved by the module. It could sound as a slogan.
+
+version
+Note: whenever you change version, you have to add a record in changelog.rst
+
+The x.y.z version numbers follow the semantics breaking.feature.fix:
+
+x increments when the data model or the views had significant changes. Data migration might be needed, or depending modules might be affected.
+y increments when non-breaking new features are added. A module upgrade will probably be needed.
+z increments when bugfixes were made. Usually a server restart is needed for the fixes to be made available.
+On each version change a record in doc/changelog.rst should be added.
+
+If a module ported to different odoo versions (e.g. 8 and 9) and some update is added only to one version (e.g. 9), then version is changed as in example below:
+
+init
+[8.0] 1.0.0
+[9.0] 1.0.0
+feature added to 8.0 and ported to 9.0
+[8.0] 1.1.0
+[9.0] 1.1.0
+feature added to 9.0 only and not going to be ported to 8.0:
+[8.0] 1.1.0
+[9.0] 1.2.0
+fix made in 9.0 only and not going to be ported to 8.0:
+[8.0] 1.1.0
+[9.0] 1.2.1
+fix made in 8.0 and ported to 9.0
+[8.0] 1.2.2
+[9.0] 1.2.2
+i.e. two module branches cannot have same versions with a different meaning
+
+version in OCA
+While OCA use odoo version in module version (e.g. 8.0.1.0.0), we specify odoo version in README.rst file and use three numbers in version (e.g. 1.0.0).
+
+author
+Use company first and then developer(s):
+
+"author": "IT-Projects LLC, Developer Name",
+In the main, if module already exists and you make small updatesfixes, you should not add your name to authors.
+
+author in OCA
+For OCA’s repositories put company name first, then OCA. Developers are listed in README file:
+
+"author": "IT-Projects LLC, Odoo Community Association (OCA)",
+website
+Url to personal page at company’s website (e.g. "https://it-projects.info/team/yelizariev")
+
+license
+IT-Projects LLC uses following licences:
+
+"GPL-3" for odoo 8.0 and below
+"LGPL-3" for odoo 9.0 and above
+For OCA’s repositories use "AGPL-3".
+
+external_dependencies
+Check if some python library exists:
+
+"external_dependencies": {"python" : ["openid"]}
+Check if some sytem application exists:
+
+"external_dependencies": {"bin" : ["libreoffice"]}
+</pr>
+                    </aside>
+				</section>
+
+				<section>
+					<h2>Liste des catégories utilisées</h2>
+<table>
+<tr><td>
+<ul>
+<li>Accounting</li>
+<li>Discuss</li>
+<li>Document Management</li>
+<li>eCommerce</li>
+<li>Human Resources</li>
+<li>Industries</li>
+<li>Localization</li>
+<li>Manufacturing</li>
+<li>Marketing</li>
+</ul>
+</td>
+<td>
+<ul>
+<li>Point of Sale</li>
+<li>Productivity</li>
+<li>Project</li>
+<li>Purchases</li>
+<li>Sales</li>
+<li>Warehouse</li>
+<li>Website</li>
+<li>Extra Tools</li>
+<li>Hidden -- Spécial</li>
+</ul>
+</tr>
+</table>
+                    <aside class="notes" data-markdown>
+
+
+
+                    </aside>
+				</section>
+
+				<section>
+					<h2>Fichier __init__.py</h2>
+					<br>
+Norme standard de python<br>
+<pre>
+# -*- coding: utf-8 -*-
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
+
+from . import controllers
+from . import models
+from . import report
+from . import wizard
+</pre>
+
+                    <aside class="notes" data-markdown>
+                    </aside>
+				</section>
+		<section>
+<h1>Pratique</h1>
+			<h2>Déclaration de notre module</h2>
+		</section>
+
+</section>
+<section>
+				<section>
+					<h1>Les objets, les héritages et les relations</h1>
+				</section>
+
+
+				<section>
+					<h2>L'ORM</h2>
+<p>ORM = object-relational mapping <br> Mapping objet-relationnel</p>
+<p>Des classes pour les tables et les champs, méthodes CRUD.</p>
+					<img class="fragment" data-src="img/minimal.png" >
+
+                    <aside class="notes" data-markdown>
+On pourrait le désigner par « correspondance entre monde objet et monde relationnel ».
+
+Pas de SQL, des objets pour les tables et les champs + des méthodes permettant de réaliser toutes les opérations de CRUD (création, lecture, mise à jour, suppression).
+
+odoo.models.Model
+                    </aside>
+				</section>
+
+
+				<section>
+					<h2>Les propriétés d'un modèle</h2>
+					<img data-src="img/model_properties.png" >
+
+                    <aside class="notes">
+<pr>
+In the preceding code, and in the vast majority of Odoo models, classes are based
+on the models.Model class. This type of models have database persistence: database
+tables are created for them and their records are stored until explicitly deleted.
+But Odoo also provides two other model types to be used: Transient and
+Abstract models.
+Transient models are based on the models.TransientModel class and are used for
+wizard-style user interaction. Their data is still stored in the database, but it is expected
+to be temporary. A vacuum job periodically clears old data from these tables.
+Abstract models are based on the models.AbstractModel class and have no data
+storage attached to them. They act as reusable feature sets to be mixed in with other
+models. This is done using the Odoo inheritance capabilities.
+</pr>
+                    </aside>
+				</section>
+
+
+
+      			<section tagcloud>
+					<h2>Les champs (odoo.fields)</h2>
+Char
+Text
+Selection
+Html
+Integer
+Date
+Datetime
+Boolean
+Binary
+Many2one
+Many2many
+One2many
+
+                 </section>
+
+				<section>
+					<h2>Les champs automatiques d'un modèle</h2>
+<h4>Toujours présent</h4>
+<ul>
+<li>id (clé primaire)</li>
+</ul>
+<p></p>
+<pre>Désactivable avec _log_access=False en attribut du modèle</pre>
+<ul>
+<li>create_uid</li>
+<li>create_date</li>
+<li>write_uid</li>
+<li>write_date</li>
+</ul>
+
+
+
+                    <aside class="notes" data-markdown>
+<pre>A few field names are reserved to be used by the ORM:
+	 id is an automatic number uniquely identifying each record, and used as the
+database primary key. It's automatically added to every model.
+The following fields are automatically created on new models, unless the _log_
+access=False model attribute is set:
+
+create_uid for the user that created the record
+create_date for the date and time when the record is created
+write_uid for the last user to modify the record
+write_date for the last date and time when the record was modified
+This information is available from the web client, using the Developer Mode menu
+and selecting the View Metadata option
+</pre>                    </aside>
+				</section>
+
+
+		<section>
+			<h2>Champs spécifiques</h2>
+<ul>
+<li>name &rarr; <i>habituellement un Char -cf _rec_name</i></li>
+<li>active &rarr; <i>Boolean</i></li>
+<li>sequence &rarr; <i>Integer -cf _order</i></li>
+<li>state &rarr; <i>Selection</i></li>
+<li>parent_id, parent_left, parent_right <br/>&rarr; <i>Integer, pour les hiérarchies</i></li>
+</ul>
+                    <aside class="notes" data-markdown>
+<pre>
+There some built-in effects that expect specific field names. We should avoid using
+them for purposes other than the intended ones. Some of them are even reserved and
+can't be used for other purposes at all:
+•	 name is used by default as the display name for the record. Usually it is a
+Char , but other field types are also allowed. It can be overridden by setting
+the _rec_name model attribute.
+[ 77 ]Models – Structuring the Application Data
+•	 active (type Boolean ) allows inactivating records. Records with
+active==False will automatically be excluded from queries. To access them
+an ('active','=',False) condition must be added to the search domain,
+or 'active_test': False should be added to the current context.
+•	 sequence (type Integer ) if present in a list view, allows to manually
+define the order of the records. To work properly it should also be in the
+model's _order .
+•	 state (type Selection ) represents basic states of the record's life cycle, and
+can be used by the state's field attribute to dynamically modify the view:
+some form fields can be made read only, required or invisible in specific
+record states.
+•	 parent_id , parent_left , and parent_right have special meaning for
+parent/child hierarchical relations. We will shortly discuss them in detail.
+</pre>                    </aside>
+
+		</section>
+
+
+
+		<section>
+			<h2>Attributs communs aux champs (1/2)</h2>
+<ul>
+<li class="fragment">string &rarr; <i>Libellé du champ, argument facultatif si premier</i></li>
+<li class="fragment">defaults &rarr; <i>Valeur directe ou lambda expression</i></li>
+<li class="fragment">translate &rarr; <i>Pour les champs textes : Char, Text, Html</i></li>
+<li class="fragment">readonly=True &rarr; <i>Lecture seule (en interface)</i></li>
+<li class="fragment">required=True &rarr; <i>Champ obligatoire (toujours)</i></li>
+<li class="fragment">index=True &rarr; <i>Crée un index en base de données</i></li>
+<li class="fragment">copy=False &rarr; <i>Ignoré en copie d'une instance</i></li>
+
+</ul>
+                    <aside class="notes" data-markdown>
+<pre>
+</pre>                    </aside>
+
+		</section>
+
+
+
+
+
+		<section>
+			<h2>Attributs communs aux champs (2/2)</h2>
+<ul>
+<li class="fragment">groups &rarr; <i>Limite l'accès au champs <br>(groups='base.group_user')</i></li>
+<li class="fragment">states &rarr; <i>Restrictions variables selon valeur de state<br/>states={'done':[('readonly',True)]}<br/>Pour : readonly, required, et invisible</i></li>
+<li class="fragment">track_visibility &rarr; <i>A utiliser en conjonction avec mail.thread<br/>Permet d'historiser automatiquement un changement d'état, par exemple</i></li>
+<li class="fragment">company_dependent &rarr; <i>property, valeur différente selon la compagnie associée</i></li>
+ 
+</ul>
+                    <aside class="notes" data-markdown>
+<pre>
+</pre>                    </aside>
+
+		</section>
+
+
+
+
+
+		<section>
+			<h2>Attributs spécifiques</h2>
+<ul>
+<li class="fragment">Char &rarr; <i>size=x (longueur maximale)</i></li>
+<li class="fragment">Selection<span class="notes" data-markdown>
+<pre><code data-trim data-noescape></code></pre>
+```python
+state = fields.Selection(
+[('draft','New'), ('open','Started'),('done','Closed')],
+'State')
+```
+</span>
+	</li>
+<li class="fragment">Float &rarr; <i>precision=(x,y)</i></li>
+</ul>
+
+                    <aside class="notes" data-markdown>
+<pre>
+</pre>                    </aside>
+
+		</section>
+
+
+
+
+
+
+		<section>
+			<h2>Champs relationnels : Many2one</h2>
+<div class="notes" data-markdown>
+<pre><code data-trim data-noescape></code></pre>
+```python
+order_id = fields.Many2one('sale.order', string='Order Reference',
+ required=True, ondelete='cascade', index=True, copy=False)
+```
+</div>
+Argument obligatoire<br/>
+<ul>
+<li>Le co-modèle</li>
+</ul>
+<div>
+<p>Attributs</p>
+<ul>
+<li>ondelete &rarr; <i>set null , restrict , cascade</i></li>
+<li>context &rarr; <i>context local</i></li>
+<li>domain &rarr; <i>domaine local, pour filtrer les données</i></li>
+</ul></div>
+
+                    <aside class="notes" data-markdown>
+<pre>
+</pre>                    </aside>
+
+		</section>
+
+
+
+
+
+
+		<section>
+			<h2>Champs relationnels : Many2many</h2>
+<div class="notes" data-markdown>
+<pre><code data-trim data-noescape></code></pre>
+Version courte :
+```python
+tag_ids = fields.Many2many('todo.task.tag', string='Tags')
+```
+
+Version longue :
+```python
+tag_ids = fields.Many2many(
+   comodel_name='todo.task.tag', # related model
+   relation='todo_task_tag_rel', # relation table name
+   column1='task_id',            # field for "this" record
+   column2='tag_id',             # field for "other" record
+   string='Etiquettes')
+```
+
+La relation inverse dans l'autre modèle -optionnel :
+```python
+task_ids = fields.Many2many(
+   'todo.task',    # related model
+   string='Tâches')
+```
+                    <aside class="notes" data-markdown>
+<pre>
+</pre>                    </aside>
+
+		</section>
+
+
+
+
+
+		<section>
+			<h2>Champs relationnels : One2many</h2>
+<p>Simple déclaration, aucune consommation d'espace</p>
+
+<p>Ce sont les équivalences inverses du Many2one.</p>
+
+<div class="notes" data-markdown>
+<pre><code data-trim data-noescape></code></pre>
+Les lignes du devis :
+```python
+order_line_ids = fields.One2many('sale.order.line',
+     'order_id', 
+     string='Order Lines', 
+     states={'cancel': [('readonly', True)], 'done': [('readonly', True)]},
+     copy=True)
+```
+
+
+                    <aside class="notes" data-markdown>
+<pre>
+</pre>                    </aside>
+
+		</section>
+
+
+
+
+		<section>
+			<h2>Champs calculés et dépendance</h2>
+<div class="notes" data-markdown>
+```python
+
+    total = fields.Float(compute='_compute_total')
+
+    @api.depends('value', 'tax')
+    def _compute_total(self):
+        for record in self:
+            record.total = record.value + record.value * record.tax
+```
+
+* Nouvel attribut des champs calculés : `store=True`
+
+</div>
+	</section>
+
+
+
+
+
+
+		<section>
+			<h2>Champs "related"</h2>
+<div class="notes" data-markdown>
+
+Un champ related est la clé donnant l'accès depuis le modèle courant, à un champ relatif à un sous-modèle.
+
+Exemple :
+    nickname = fields.Char(related='user_id.partner_id.name', store=True)
+
+
+* Nouvel attribut des champs calculés : `store=True`
+
+</div>
+	</section>
+
+<section>
+					<h2>Les contraintes</h2>
+			<div class="notes" data-markdown>
+<pre><code data-trim data-noescape></code></pre>
+
+Contraintes code python
+
+```python
+    @api.multi
+    @api.constrains('company_id', 'company_ids')
+    def _check_company(self):
+        if any(user.company_ids and user.company_id not in user.company_ids for user in self):
+            raise ValidationError(_('The chosen company is not in the allowed companies for this user'))
+```
+
+Contraintes SQL
+
+```python
+     _sql_constraints = [
+        ('name_uniq', 'unique (category_id, name)', 'The name of the group must be unique within an application!')
+    ]
+```
+			</div>
+                    <aside class="notes" data-markdown>
+
+                    </aside>
+		</section>
+
+				<section>
+					<h2>Héritage d'un modèle</h2>
+
+<img data-src="img/inheritance_methods.png"/>
+
+                    <aside class="notes" data-markdown>
+
+Odoo provides three different mechanisms to extend models in a modular way:
+
+Classical inheritance
+---------------------
+
+Héritage de classe
+Prototypage
+
+Delegation
+----------
+
+* creating a new model from an existing one, adding new information to the
+  copy but leaving the original module as-is
+* extending models defined in other modules in-place, replacing the previous
+  version
+* delegating some of the model's fields to records it contains
+
+.. image:: ../images/inheritance_methods.png
+    :align: center
+
+
+
+
+                    </aside>
+		</section>
+
+
+
+
+		<section>
+			<h2>Mise à jour de l'interface</h2>
+<div class="notes" data-markdown>
+
+Lors de la saisie dans une forme, il est intéressant de pouvoir mettre à jour des champs avant enregistrement.
+
+La fonction onchange a cet usage.
+
+Ne pas l'utiliser sur un champ calculé.
+
+```python
+
+    @api.onchange('field1', 'field2') # if these fields are changed, call method
+    def check_change(self):
+        if self.field1 < self.field2:
+            self.field3 = True
+```
+
+
+</div>
+	</section>
+
+
+
+
+
+
+
+
+		<section>
+			<h2>Extrait : le modèle sale_order</h2>
+			<img data-src="img/model.png" >
+
+		</section>
+
+
+		<section>
+<h1>Pratique</h1>
+			<h2>Déclaration de notre modèle</h2>
+<h4>Contrôle par l'interface Odoo</h4>
+		</section>
+
+</section>
+<section>
+
+				<section>
+					<h1>Les méthodes et outils de l'ORM</h1>
+				</section>
+					<section>
+						<h2>Méthodes et outils</h2>
+						<ol>
+							<li>Recordsets</li>
+							<li>L'environnement</li>
+							<li>Les domaines</li>
+							<li>La notation des champs relationnels</li>
+							<li>Les méthodes CRUD</li>
+							<li>Création Module</li>
+						</ol>
+					</section>
+
+
+
+
+		<section>
+			<h2>L'interface shell</h2>
+<div class="notes" data-markdown>
+
+./odoo-bin.py shell -d demo10 -c addons_teamdsi/odoo_xps.conf
+
+	In [3]: p=self.env['res.partner']
+
+	In [4]: l=p.search([('id','=',8)])
+
+	In [5]: l.name
+	Out[5]: u'Agrolait'
+
+	In [6]: l.name="Agrolaitier"
+
+	In [7]: self.env.cr.commit()
+
+
+
+</div>
+		</section>
+
+
+
+
+
+		<section>
+			<h2>Recordsets : présentation</h2>
+<div class="notes" data-markdown>
+
+C'est le recordset qui permet d'accéder à des records d'un même modèle (trié). Toute méthode d'un modèle prend en paramètre à minima self qui est un recordset
+
+    class AModel(models.Model):
+        _name = 'a.model'
+        def a_method(self):
+            # self can be anywhere between 0 records and all records in the
+            # database
+            self.do_operation()
+
+Il est possible d'itérer sur un recordset
+
+        def do_operation(self):
+            print self # => a.model(1, 2, 3, 4, 5)
+            for record in self:
+                print record # => a.model(1), then a.model(2), then a.model(3), ...
+</div>
+		</section>
+
+
+		<section>
+			<h2>Recordsets (accès aux champs)</h2>
+<div class="notes" data-markdown>
+
+L'interface des "enregistrement(s) actif(s)" que fournit le Recordset permet d'accéder aux champs du modèle, via les attributs (ou comme un dictionnaire).
+Cet accès est possible en lecture, mais aussi en écriture, mais seulement pour un singleton (sinon déclenche une erreur)
+
+Fixer la valeur de l'attribut représentant un champ déclenche un enregistrement dans la base de données.
+
+    >>> record.name
+    Example Name		<section>
+
+		</section>
+    >>> record.company_id.name
+    Company Name
+    >>> record.name = "Bob"
+    >>> field = "name"
+    >>> record[field]
+    Bob
+
+
+
+</div>
+		</section>
+
+
+		<section>
+			<h2>Opérations disponibles sur un recordset</h2>
+<div class="notes" data-markdown>
+
+Un recordset n'est pas mutable, mais peut être combiné avec des opérations, retournant un nouveau recordset, sans préserver l'ordre.
+</div>
+<div>
+
+<ul>
+<li>record in set &rarr; <i>singleton, retourne vrai si présent</i></li>
+<li>set1 | set2 &rarr; <i>union des deux, renvoie tous les records présents dans les deux</i></li>
+<li>set1 & set2 &rarr; <i>intersection des deux recordsets</i></li>
+<li>set1 - set2 &rarr; <i>recordset des records de set1 qui ne sont pas dans set2</i></li>
+</ul></div>
+		</section>
+
+
+
+
+
+
+		<section>
+			<h2>Transformation d'un recordset</h2>
+<div class="notes" data-markdown>
+
+odoo.models.Model.filtered
+
+        # only keep records whose company is the current user's
+        records.filtered(lambda r: r.company_id == user.company_id)
+        # only keep records whose partner is a company
+        records.filtered("partner_id.is_company")
+
+odoo.models.Model.sorted
+
+        # sort records by name
+        records.sorted(key=lambda r: r.name)
+
+odoo.models.Model.mapped
+
+        # returns a list of summing two fields for each record in the set
+        records.mapped(lambda r: r.field1 + r.field2)
+
+    La fonction peut représenter un champ, pour obtenir sa/ses valeur(s):
+
+        # returns a list of names
+        records.mapped('name')
+
+
+</div>
+		</section>
+
+
+
+		<section>
+			<h2>Compléments recordset</h2>
+<div class="notes" data-markdown>
+
+INDISPENSABLE !
+	>>> env.ref('base.group_public')
+        res.groups(2)
+	propriété ids pour obtenir la liste des ids du recordset
+
+Check existence des records dans un recordset
+
+        if not record.exists():
+            raise Exception("The record has been deleted")
+
+        records.may_remove_some()
+        # only keep records which were not deleted
+        records = records.exists()
+
+odoo.models.Model.ensure_one
+
+        records.ensure_one()
+        # is equivalent to but clearer than:
+        assert len(records) == 1, "Expected singleton"
+</div>
+	</section>
+
+
+
+
+
+		<section>
+			<h2>L'environnement</h2>
+<div class="notes" data-markdown>
+
+La classe odoo.api.Environment stocke des informations contextuelles de l'ORM :
+ le curseur de BDD <i>(pour les requêtes)</i>, l'utilisateur courant <i>(pour les droits)</i>
+et le contexte.
+
+    >>> records.env
+    Environment object ...
+    >>> records.env.user
+    res.user(3)
+    >>> records.env.cr
+    Cursor object ...
+
+En créant un recordset depuis un autre, l'environnement est hérité:
+
+    >>> self.env['res.partner']
+    res.partner
+    # ce recordset partage le même environnement
+
+</div>
+                    <aside class="notes" data-markdown>
+Low-level SQL
+-------------
+
+The :attr:`~odoo.api.Environment.cr` attribute on environments is the
+cursor for the current database transaction and allows executing SQL directly,
+either for queries which are difficult to express using the ORM (e.g. complex
+joins) or for performance reasons::
+
+    self.env.cr.execute("some_sql", param1, param2, param3)
+
+Because models use the same cursor and the :class:`~odoo.api.Environment`
+holds various caches, these caches must be invalidated when *altering* the
+database in raw SQL, or further uses of models may become incoherent. It is
+necessary to clear caches when using ``CREATE``, ``UPDATE`` or ``DELETE`` in
+SQL, but not ``SELECT`` (which simply reads the database).
+
+Clearing caches can be performed using the
+:meth:`~odoo.api.Environment.invalidate_all` method of the
+:class:`~odoo.api.Environment` object.
+</aside>
+		</section>
+
+
+
+
+
+		<section>
+			<h2>Altérer l'environnement</h2>
+<div class="notes" data-markdown>
+
+
+Des méthodes permettent de modifier l'environnement d'un recordset (en fait, recrée un nouveau)
+
+odoo.models.Model.sudo
+        # créer un partenaire comme administrateur
+        env['res.partner'].sudo().create({'name': "A Partner"})
+
+
+odoo.models.Model.with_context
+
+        # look for partner, or create one with specified timezone if none is
+        # found
+        env['res.partner'].with_context(tz=a_tz).find_or_create(email_address)
+
+</div>
+		</section>
+
+
+
+
+		<section>
+			<h2>Méthodes : create</h2>
+<div class="notes" data-markdown>
+
+odoo.models.Model.create
+
+    Prend en paramètre un dictionnaire de valeurs de champs, et renvoie le recorset de l'enregistrement créé
+
+        >>> env = self.env['res.partner']
+        >>> self.create({'name': "nouveau partenaire"})
+        res.partner(5684)
+
+</div>
+		</section>
+
+
+
+
+		<section>
+			<h2>Définir les champs relationnels</h2>
+<div class="notes" data-markdown>
+Référence pour affecter la/les valeurs d'un champ one2many ou many2many :
+
+     (0, 0,  { values })    link to a new record that needs to be created with the given values dictionary
+     (1, ID, { values })    update the linked record with id = ID (write *values* on it)
+     (2, ID)                remove and delete the linked record with id = ID (calls unlink on ID, that will delete the object completely, and the link to it as well)
+     (3, ID)                cut the link to the linked record with id = ID (delete the relationship between the two objects but does not delete the target object itself)
+     (4, ID)                link to existing record with id = ID (adds a relationship)
+     (5)                    unlink all (like using (3,ID) for all linked records)
+     (6, 0, [IDs])          replace the list of linked IDs (like using (5) then (4,ID) for each ID in the list of IDs)
+
+     Example:
+        [(0, 0, {'field_name':field_value_record1, ...}), (0, 0, {'field_name':field_value_record2, ...})]
+
+Pour un many2one : 
+
+. l'ID de référence 
+
+. False pour supprimer le lien.
+
+</div>
+		</section>
+
+
+
+
+		<section>
+			<h2>Méthodes : browse, search</h2>
+<div class="notes" data-markdown>
+
+odoo.models.Model.browse
+
+   Prend un id ou une liste d'ids et retourne un recordset (système externe ou old API)
+
+        >>> self.browse([7, 18, 12])
+        res.partner(7, 18, 12)
+
+odoo.models.Model.search
+
+   Prend un domaine comme référence, et renvoie un recordset des enregistrements qui matchent.
+
+        >>> # searches the current model
+        >>> self.search([('is_company', '=', True), ('customer', '=', True)])
+        res.partner(7, 18, 12, 14, 17, 19, 8, 31, 26, 16, 13, 20, 30, 22, 29, 15, 23, 28, 74)
+        >>> self.search([('is_company', '=', True)], limit=1).name
+        'Agrolait'
+
+</div>
+	</section>
+
+
+
+		<section>
+			<h2>Méthodes : search</h2>
+
+<p>Paramètres de search</p>
+<div>
+
+<ul>
+<li>offset &rarr; <i>Position de début du résultat</i></li>
+<li>limit &rarr; <i>Nombre maximum de résultats</i></li>
+<li>order &rarr; <i>Permet de surcharger ponctuellement l'attribut order du modèle sous-jacent</i></li>
+</ul></div>
+
+
+
+<p>
+Il existe une autre méthode : odoo.models.Model.search_count qui permet de matcher le nombre d'enregistrements conformes à un domaine.
+</p>
+	</section>
+
+
+
+
+		<section>
+			<h2>Les domaines</h2>
+<div class="notes" data-markdown>
+
+Un domaine est une liste de critères. Chacun est représenté par un triplet (liste ou tuple), composé ainsi :
+
+field_name (str)
+    un nom de champ du modèle, ou un champ d'une relation, relié par un ou des points (doted notation)
+    comme 'partner_id.country'
+
+operator (str)
+    Un operateur qui sera utilisé pour comparer le field_name et la value.
+
+value
+    variable type, must be comparable (through operator) to the named
+    field
+
+
+</div>
+	</section>
+
+
+
+
+
+		<section>
+			<h2>Les opérateurs de domaines</h2>
+<div class="notes" data-markdown>
+
+Les opérateurs valides sont :
+
+    =  
+    != not equals to
+    > greater than
+    >= greater than or equal to
+    '<' less than
+    <= less than or equal to
+    =? unset or equals to (returns true if value is either None or
+        False, otherwise behaves like =)
+    =like
+        matches field_name against the value pattern. An underscore
+        _ in the pattern stands for (matches) any single character; a
+        percent sign matches any string of zero or more characters.
+    like
+        Similar to =like but wraps value with pcent before matching
+    not like
+    ilike
+        case insensitive like
+    not ilike
+    =ilike
+        case insensitive =like
+    in
+        is equal to any of the items from value, value should be a
+        list of items
+    not in
+        is unequal to all of the items from value
+    child_of
+        is a child (descendant) of a value record.
+
+</div>
+	</section>
+
+
+
+
+
+
+		<section>
+			<h2>Compléments sur les domaines</h2>
+<div class="notes" data-markdown>
+
+
+
+& logical *AND*, '|' logical *OR*, '!' logical *NOT*
+
+        [('name','ilike','ABC'),
+         ('language.code','!=','en_US'),
+         '|',('country_id.code','=','be'),
+             ('country_id.code','=','de')]
+
+? ? ? ?
+
+</div>
+<div class= "fragment" data-markdown>
+
+Réponse
+
+            (name like '%ABC%')
+        AND (language is NOT english)
+        AND (country is Belgium OR Germany)
+
+</div>
+	</section>
+
+<section>
+	<h2>Exercice</h2>
+	<ul>
+	<li>Rechercher les devices dont la date d'achat est supérieure au 01/01/2019</li>
+	<li>Rechercher les devices disponibles (pas de date allocation)</li>
+	<li>Rechercher les devices étant du modèle "Galaxy S10"</li>
+	<li>Rechercher les devices de la marque Samsung ou OnePlus</li>
+	<li>Rechercher les devices dont la durée de garantie est inférieure à 6 mois ou qui n'ont pas date de fin de garantie</li>
+	</ul>
+</section>
+
+
+
+		<section>
+			<h2>Méthode : write</h2>
+<div class="notes" data-markdown>
+
+Met à jour le recordset courant
+
+Paramètres :
+vals (dict) 
+--
+champs à mettre à jour, ainsi que leur valeur:
+{'foo': 1, 'bar': "Qux"}
+
+</div>
+<div>
+<ul><li>pour les champs numériques (<a href="">Integer</code></a>,
+<a href="#">Float</code></a>) la valeur doit correspondre au type de champ.</li>
+<li>Pour les <a href="">Boolean</code></a>, la valeur doit être un <a href=""><code>bool</code></a></li>
+<li>Pour une <a href="">Selection</code></a>, la valeur doit être une chaine existante ou un entier</li>
+<li>Pour les champs relationnels, déjà vu pour le create</li>
+<li>Pour les <a href="">Date</code></a> et <a href="">Datetime</code></a> c'est une chaine sous la forme '2017-02-21 18:45:00'</a>
+</li></ul>
+	</section>
+
+
+		<section>
+			<h2>Compléments sur write</h2>
+<div class="notes" data-markdown>
+
+Essayer d'écrire plusieurs enregistrements déclenchera une erreur.
+
+Attention à la notation d'attribut pour mettre à jour ! ! !
+
+        # 3 * len(records) database updates
+        for record in records:
+            record.a = 1
+            record.b = 2
+            record.c = 3
+
+        # len(records) database updates
+        # CORRECT !
+        for record in records:
+            record.write({'a': 1, 'b': 2, 'c': 3})
+
+        # 1 database update
+        records.write({'a': 1, 'b': 2, 'c': 3})
+</div>
+	</section>
+
+
+
+		<section>
+			<h2>Méthode : unlink</h2>
+<div class="notes" data-markdown>
+
+Efface le ou les enregistrements du recorset courant
+
+Erreurs 
+AccessError -- 
+L'utilisateur n'a pas les droits d'effacement
+UserError -- 
+Il y a des enregistrements liés protégés
+
+</div>
+	</section>
+
+		<section>
+<h1>Pratique</h1>
+			<h2>Tests sur notre dossier</h2>
+<h4>Création, recherches, ...</h4>
+		</section>
+
+<section>
+<h1>ERP Peek</h1>
+			<h2>sudo pip install -U erppeek</h2>
+		</section>
+
+<section>
+<h1>ERP Peek</h1>
+erppeek --config=/home/famiaud/erppeek.ini --env=test
+<div class="notes" data-markdown>
+        # config.ini
+        [test]
+        scheme = http
+        port = 8071
+        host = localhost 
+        username = team@team-dsi.fr
+        password = admin
+        database = test
+</div>
+		</section>
+<section>
+						<h2>Exercice</h2>
+						<ol>
+							<li>Créer une marque et un type de modèle</li>
+							<li>Créer un modèle et un device</li>
+							<li>Rechercher les clients français</li>
+							<li>Rechercher les devices dont la marque est "Samsung"</li>
+							<li>Ajouter un numéro de téléphone de support sur une marque</li>
+							<li>Faire un search des devices qui n'ont pas de date d'achat, et mettre une date d'achat à aujourd'hui</li>
+							<li>Créer, puis supprimer un device</li>
+						</ol>
+					</section>
+<section>
+						<h2>Exercice 2</h2>
+						Créer un script Python qui va lire un fichier CSV contenant les colonnes suivantes et créer les devices automatiquement
+						<ol>
+							<li>Numéro de série</li>
+							<li>Date allocation</li>
+							<li>Date achat</li>
+							<li>Modèle</li>
+							<li>Marque</li>
+							<li>Type (téléphone, PC, ...)</li>
+							<li>Employé</li>
+						</ol>
+					</section>
+</section>
+<section>
+				<section>
+					<h1>Créer des données à l'installation du module</h1>
+				</section>
+					<section>
+						<h2>Structure d'un fichier XML</h2>
+						<ol>
+							<li>Concepts</li>
+							<li>Instancier des données</li>
+							<li>Les champs relationnels </li>
+						</ol>
+<p/>
+						<h6>Objectif : charger des données dans la base</h6>
+					</section>
+
+
+					<section>
+						<h2>Concepts</h2>
+						<ul>
+							<li>Le principe de mise à jour (noupdate=1)</li>
+							<li>L'instruction eval</li>
+							<li>La référence ; recherche avec debug mode OU source</li>
+							<li>Enregistrer une donnée relationnelle</li>
+						</ul>
+                    
+					</section>
+
+
+					<section>
+						<h2>insérer des données</h2>
+                    <img width="800" data-src="img/xml.png"/>
+					</section>
+
+					<section>
+						<h2>insérer des données (2)</h2>
+                    <img width="800" data-src="img/xml2.png" />
+					</section>
+
+
+		<section>
+<h1>Pratique</h1>
+			<h2>Insérer des données</h2>
+			<ul>
+				<li>Créer des marques via XML</li>
+				<li>Créer des modèles via XML</li>
+				<li>Créer des types de devices via XML (téléphone, PC, ...)</li>
+			</ul>
+		</section>
+
+
+
+
+
+
+	</section>
+
+</section>
+
+
+
+
+
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+				slideNumber: true,
+				slideNumber: 'c/t',
+				showSlideNumber: 'speaker',
+
+
+
+				transition: 'concave', // none/fade/slide/convex/concave/zoom
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/tagcloud/tagcloud.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
